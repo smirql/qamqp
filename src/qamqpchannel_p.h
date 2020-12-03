@@ -64,7 +64,7 @@ public:
     QPointer<QAmqpClient> client;
     QString name;
     quint16 channelNumber;
-    static quint16 nextChannelNumber;
+//    static quint16 nextChannelNumber;
     bool opened;
     bool needOpen;
 

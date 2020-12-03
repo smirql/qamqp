@@ -138,6 +138,10 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_connect())
     Q_PRIVATE_SLOT(d_func(), void _q_disconnect())
 
+    struct {
+        quint16 nextChannelNumber = {0};
+    } _private;
+
     friend class QAmqpChannelPrivate;
     friend class QAmqpQueuePrivate;
 
