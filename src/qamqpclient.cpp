@@ -45,7 +45,7 @@ void QAmqpClientPrivate::init()
     initSocket();
     heartbeatTimer = new QTimer(q);
     QObject::connect(heartbeatTimer, SIGNAL(timeout()), q, SLOT(_q_heartbeat()));
-    QObject::connect(q, SIGNAL(_heartbeat()), q, SLOT(_q_heartbeat()));
+    QObject::connect(q, SIGNAL(heartbeat()), q, SLOT(_q_heartbeat()));
     reconnectTimer = new QTimer(q);
     reconnectTimer->setSingleShot(true);
     QObject::connect(reconnectTimer, SIGNAL(timeout()), q, SLOT(_q_connect()));
