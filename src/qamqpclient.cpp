@@ -45,6 +45,7 @@ void QAmqpClientPrivate::init()
     initSocket();
     heartbeatTimer = new QTimer(q);
     QObject::connect(heartbeatTimer, SIGNAL(timeout()), q, SLOT(_q_heartbeat()));
+    QObject::connect(q, SIGNAL(_heartbeat()), q, SLOT(_q_heartbeat()));
     reconnectTimer = new QTimer(q);
     reconnectTimer->setSingleShot(true);
     QObject::connect(reconnectTimer, SIGNAL(timeout()), q, SLOT(_q_connect()));
@@ -345,6 +346,11 @@ void QAmqpClientPrivate::sendFrame(const QAmqpFrame &frame)
 
     QDataStream stream(socket);
     stream << frame;
+
+    if (frame.type() == QAmqpFrame::Heartbeat &&
+            socket->bytesToWrite() > 0 &&
+            !socket->waitForBytesWritten(100))
+        qDebug() << "AmqpClient : " << "Error in wait frame send";
 }
 
 void QAmqpClientPrivate::closeConnection()
@@ -452,7 +458,7 @@ void QAmqpClientPrivate::tune(const QAmqpMethodFrame &frame)
                channelMax, frameMax, heartbeatDelay);
 
     if (heartbeatTimer) {
-        heartbeatTimer->setInterval(heartbeatDelay * 1000);
+        heartbeatTimer->setInterval(heartbeatDelay * 1000 / 2);
         if (heartbeatTimer->interval())
             heartbeatTimer->start();
         else
